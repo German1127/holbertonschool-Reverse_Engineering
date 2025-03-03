@@ -57,3 +57,32 @@ Entry Point Address: <entry_point_address>
 ```
 
 ---
+
+# 1. enumerate list of sections 
+
+In this task, you are asked to analyze a binary file and identify the sections it uses. Specifically, you need to focus on an unusual section and determine its size.
+
+## Steps
+
+ - 1- Identify the Sections in the Binary.
+ - 2- Use tools like readelf or objdump to list all the sections in the binary file. You should pay special attention to any unusual sections.
+ - 3- Obtain the Size of the Unusual Section.
+ - 4- Once you’ve identified the unusual section, note down its size from the output of the tool you used.
+
+## Expected Files
+
+ - size.txt: Contains the size of the unusual section.
+ - command.txt: Contains the command used to list the sections and identify the size of the unusual section.
+
+---
+
+# 2. external libraries 
+
+The use of external libraries is common across binaries. Especially when the function is not implemented by the standard LIBC and should be used by many binaries at the same time; In this task the purpose is to get the name of the external library needed by the binary.
+
+## Tools:
+
+ - Readelf
+ - Objdump
+ - ldd
+
