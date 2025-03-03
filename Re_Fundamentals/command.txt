@@ -1,2 +1,2 @@
-readelf -S task1
+readelf -S task2
 .hidden_section   0x0000000000001020     1024
