@@ -1,34 +1,36 @@
 #!/bin/bash
 
-if [ $# -ne 1 ]; then
-    echo "Usage: $0 <ELF_file>"
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <ELF file>"
     exit 1
 fi
 
-file_name="$1"
-
-if [ ! -f "$file_name" ]; then
-    echo "Error: File '$file_name' does not exist."
+if [ ! -f "$1" ]; then
+    echo "Error: File '$1' does not exist."
     exit 1
 fi
 
-if ! file "$file_name" | grep -q "ELF"; then
-    echo "Error: File '$file_name' is not an ELF file."
+if ! file "$1" | grep -q "ELF"; then
+    echo "Error: File '$1' is not a valid ELF file."
     exit 1
 fi
 
-magic_number=$(hexdump -n 16 -e '16/1 " %02x"' "$file_name")
+magic_number=$(readelf -h "$1" | awk '/Magic:/ {for (i=2; i<=NF; i++) printf $i " "; print ""}')
+class_format=$(readelf -h "$1" | awk '/Class:/ {print $2}')
+byte_order_raw=$(readelf -h "$1" | awk '/Data:/ {print $2}')
+entry_point=$(readelf -h "$1" | awk '/Entry point address:/ {print $4}')
 
-class=$(readelf -h "$file_name" | grep "Class:" | awk '{print $2}')
-
-byte_order=$(readelf -h "$file_name" | grep "Data:" | awk '{print $2}' | sed 's/,//')
-if [[ "$byte_order" == "2" ]]; then
+if [[ "$byte_order_raw" == "2" ]]; then
     byte_order="little endian"
-elif [[ "$byte_order" == "1" ]]; then
+elif [[ "$byte_order_raw" == "1" ]]; then
     byte_order="big endian"
+else
+    byte_order="unknown"
 fi
 
-entry_point_address=$(readelf -h "$file_name" | grep "Entry point address:" | awk '{print $4}')
-
-source ./messages.sh
-display_elf_header_info
+echo "ELF Header Information for '$1':"
+echo "----------------------------------------"
+echo "Magic Number: $magic_number"
+echo "Class: $class_format"
+echo "Byte Order: $byte_order"
+echo "Entry Point Address: $entry_point"
